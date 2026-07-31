@@ -6,7 +6,6 @@
  * published by the Free Software Foundation.
  ************************************************************************/
 
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
@@ -72,13 +71,13 @@
  *
  * \section cmds_local Local configuration and information:
  * <dl>
- *   <dt>\ref urls<dd><tt>Define working copy base 
+ *   <dt>\ref urls <dd><tt>Define working copy base 
  *   directories by their URL(s)</tt>
- *   <dt>\ref status<dd><tt>Get a list of changed entries</tt>
- *   <dt>\ref info<dd><tt>Display detailed information about 
+ *   <dt>\ref status <dd><tt>Get a list of changed entries</tt>
+ *   <dt>\ref info <dd><tt>Display detailed information about 
  *   single entries</tt>
- *   <dt>\ref log<dd><tt>Fetch the log messages from the repository</tt>
- *   <dt>\ref diff<dd><tt>Get differences between files (local and 
+ *   <dt>\ref log <dd><tt>Fetch the log messages from the repository</tt>
+ *   <dt>\ref diff <dd><tt>Get differences between files (local and 
  *   remote)</tt>
  *   <dt>\ref cpfd "copyfrom-detect"<dd><tt>Ask FSVS about probably 
  *   copied/moved/renamed entries; see \ref cp</tt>
@@ -86,37 +85,37 @@
  *
  * \section cmds_au Defining which entries to take:
  * <dl>
- *   <dt>\ref ignore and \ref rign<dd><tt>Define ignore patterns</tt>
- *   <dt>\ref unversion<dd><tt>Remove entries from versioning</tt>
- *   <dt>\ref add<dd><tt>Add entries that would be ignored</tt>
- *   <dt>\ref cp, \ref mv<dd><tt>Tell FSVS that entries were 
+ *   <dt>\ref ignore and \ref rign <dd><tt>Define ignore patterns</tt>
+ *   <dt>\ref unversion <dd><tt>Remove entries from versioning</tt>
+ *   <dt>\ref add <dd><tt>Add entries that would be ignored</tt>
+ *   <dt>\ref cp, \ref mv <dd><tt>Tell FSVS that entries were 
  *   copied</tt>
  * </dl>
  *
  * \section cmds_rep Commands working with the repository:
  * <dl>
- *   <dt>\ref commit<dd><tt>Send changed data to the repository</tt>
- *   <dt>\ref update<dd><tt>Get updates from the repository</tt>
- *   <dt>\ref checkout<dd><tt>Fetch some part of the repository, and 
+ *   <dt>\ref commit <dd><tt>Send changed data to the repository</tt>
+ *   <dt>\ref update <dd><tt>Get updates from the repository</tt>
+ *   <dt>\ref checkout <dd><tt>Fetch some part of the repository, and 
  *     register it as working copy</tt>
- *   <dt>\ref cat<dd><tt>Get a file from the directory
- *   <dt>\ref revert and \ref uncp<dd><tt>Undo local changes and 
+ *   <dt>\ref cat <dd><tt>Get a file from the directory</tt>
+ *   <dt>\ref revert and \ref uncopy <dd><tt>Undo local changes and 
  *     entry markings</tt>
- *   <dt>\ref remote-status<dd><tt>Ask what an \ref update 
+ *   <dt>\ref remote-status <dd><tt>Ask what an \ref update 
  *   would bring</tt>
  * </dl>
  *
  * \section cmds_prop Property handling:
  * <dl>
- *   <dt>\ref prop-set<dd><tt>Set user-defined properties</tt>
- *   <dt>\ref prop-get<dd><tt>Ask value of user-defined properties</tt>
- *   <dt>\ref prop-list<dd><tt>Get a list of user-defined properties</tt>
+ *   <dt>\ref prop-set <dd><tt>Set user-defined properties</tt>
+ *   <dt>\ref prop-get <dd><tt>Ask value of user-defined properties</tt>
+ *   <dt>\ref prop-list <dd><tt>Get a list of user-defined properties</tt>
  * </dl>
  *
  * \section cmds_rec Additional commands used for recovery and debugging:
  * <dl>
- *   <dt>\ref export<dd><tt>Fetch some part of the repository</tt>
- *   <dt>\ref sync-repos<dd><tt>Drop local information about the entries, 
+ *   <dt>\ref export <dd><tt>Fetch some part of the repository</tt>
+ *   <dt>\ref sync-repos <dd><tt>Drop local information about the entries, 
  *     and fetch the current list from the repository.</tt>
  * </dl>
  *
@@ -159,7 +158,7 @@
  *
  *
  * \subsection glob_opt_verb -q, -v -- verbose/quiet
- * <tt>-v<tt>/<tt>-q<tt> set/clear verbosity flags, and so give more/less 
+ * <tt>-v</tt>/<tt>-q</tt> set/clear verbosity flags, and so give more/less 
  * output.
  *
  * Please see \ref o_verbose "the verbose option" for more details.
@@ -259,8 +258,8 @@
  * action with a name matching some reserved prefixes.
  *
  * <tr><td>\anchor warn_ign_abs_not_base \e ignpat-wcbase<td>
- * This warning is issued if an \ref ignpat_shell_abs "absolute ignore 
- * pattern" does not match the working copy base directory. \n
+ * This warning is issued if an \ref ignpat_shell_abs "absolute ignore pattern"
+ * does not match the working copy base directory. \n
  * See \ref ignpat_shell_abs "absolute shell patterns" for more details.
  *
  * <tr><td>\e diff-status<td>
@@ -404,7 +403,7 @@ void _DEBUGP_open_output(FILE **output, int *was_popened)
  * Never called directly, used only via the macro DEBUGP().
  *
  * For uninitializing in the use case \c debug_buffer the \c line value is 
- * misused to show whether an error occured. */
+ * misused to show whether an error occurred. */
 void _DEBUGP(const char file[], int line, 
 		const char func[], 
 		const char format[], ...)
@@ -660,12 +659,6 @@ const char* Version(FILE *output)
 #ifdef HAVE_LOCALES
 				STRINGIFY(HAVE_LOCALES)
 #endif
-#ifdef HAVE_UINT32_T
-				STRINGIFY(HAVE_UINT32_T)
-#endif
-#ifdef AC_CV_C_UINT32_T
-				STRINGIFY(AC_CV_C_UINT32_T)
-#endif
 #ifdef HAVE_LINUX_TYPES_H
 				STRINGIFY(HAVE_LINUX_TYPES_H)
 #endif
@@ -721,6 +714,14 @@ const char* Version(FILE *output)
 				"\n");
 	}
 	return Id;
+}
+
+void do__BUG(int line)
+{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+	*(int*)42 = line;
+#pragma GCC diagnostic pop
 }
 
 
@@ -928,7 +929,7 @@ ex:
 /** This function is used for the component tests.
  * When FSVS is run with "-d" as parameter, a call to fileno() is 
  * guaranteed to happen here; a single "up" gets into this stack frame, and 
- * allows easy setting/quering of some values. */
+ * allows easy setting/querying of some values. */
 void *_do_component_tests(int a)
 {
 	/* How not to have them optimized out? */

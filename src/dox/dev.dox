@@ -14,8 +14,8 @@ mistakes will be politely answered, too.
 */
 
 /**
-	\defgroup dev_debug What to do in case of errors
-	\ingroup dev
+\defgroup dev_debug What to do in case of errors
+\ingroup dev
 
 First, please read the documentation to rule out the possibility that
 it's just a badly written sentence that caused misunderstanding.
@@ -269,7 +269,7 @@ There's a perl hack for documentation generation, where these get removed.
 \note For C this would not be strictly necessary; There's always the way of 
 putting a <tt># if 0</tt> block around that comment block. Doxygen doesn't 
 allow this; even if using a shell script (with comments indicated by \c #) 
-doxygen doesn't allow "<tt>/§*</tt> or <tt>*§/</tt>.
+doxygen doesn't allow <tt>/§*</tt> or <tt>*§/</tt>.
 
 
 \section dev_tests About the tests

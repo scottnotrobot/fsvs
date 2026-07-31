@@ -7,7 +7,6 @@
  ************************************************************************/
 
 #include <stdlib.h>
-#include <unistd.h>
 #include <ctype.h>
 #include <pcre2.h>
 #include <sys/mman.h>
@@ -119,7 +118,7 @@
  *
  * To see more easily what different patterns do you can use the \c test 
  * subcommand. The following combinations are available:<UL>
- * <li><tt>fsvs groups test \e pattern</tt>\n
+ * <li><tt>fsvs groups test \e pattern</tt><br>
  * Tests \b only the given pattern against all new entries in your working 
  * copy, and prints the matching paths. The pattern is not stored in the 
  * pattern list.
@@ -988,7 +987,7 @@ int ign___init_pattern_into(char *pattern, char *end, struct ignore_t *ignore)
 
 	data_seen=0;
 
-	/* gcc reports "used unitialized" - it doesn't see that the loop gets 
+	/* gcc reports "used uninitialized" - it doesn't see that the loop gets 
 	 * terminated in the case speclen==0. */
 	eo_parm=NULL;
 	/* This are the defaults: */
@@ -1384,7 +1383,7 @@ ex:
 
 /** Compares the given \c sstat_t \a st with the \b device ignore pattern 
  * \a ign.
- * Does the less-than, greater-than and/or equal comparision.
+ * Does the less-than, greater-than and/or equal comparison.
  * */
 int ign___compare_dev(struct sstat_t *st, struct ignore_t *ign)
 {
@@ -1640,6 +1639,7 @@ int ign__is_ignore(struct estat *sts,
 	struct ignore_t *ign;
 	struct sstat_t *st;
 	struct estat sts_cmp;
+	static int pcre2_match_data_size = 2;
 	static pcre2_match_data *match_data = NULL;
 
 
@@ -1656,7 +1656,7 @@ int ign__is_ignore(struct estat *sts,
 	}
 
 	if (!match_data) {
-		match_data = pcre2_match_data_create(2, NULL);
+		match_data = pcre2_match_data_create(pcre2_match_data_size, NULL);
 		STOPIF_ENOMEM(!match_data);
 	}
 
@@ -1707,11 +1707,11 @@ int ign__is_ignore(struct estat *sts,
 						break;
 					} else if (status == 0) {
 						/* Too small */
-						status = pcre2_get_match_data_size(match_data) * 2;
 						pcre2_match_data_free(match_data);
+						pcre2_match_data_size += 5;
 
-						DEBUGP("match_data too small, realloc with %d", status);
-						match_data = pcre2_match_data_create(status, NULL);
+						DEBUGP("match_data too small, realloc with %d", pcre2_match_data_size);
+						match_data = pcre2_match_data_create(pcre2_match_data_size, NULL);
 						if (!match_data)
 							STOPIF_ENOMEM(!match_data);
 						/* Try again. */

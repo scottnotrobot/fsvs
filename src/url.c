@@ -8,7 +8,6 @@
 
 #include <stdlib.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <ctype.h>
 #include <sys/select.h>
 #include <subversion-1/svn_dirent_uri.h>
@@ -103,7 +102,7 @@
  * more readable version you can use \ref glob_opt_verb "-v".
  *
  *
- * \subsection urls_load Modifying URLs
+ * \subsection urls_modif Modifying URLs
  *
  * You can change the various parameters of the defined URLs like this:
  * \code
@@ -136,7 +135,7 @@
  *   ["name:"{name},]["target:"{t-rev},]["prio:"{prio},]URL
  * \endcode
  * where URL is a standard URL known by subversion -- 
- * something like <tt>http://....</tt>, <tt>svn://...</tt> or
+ * something like <tt>%http://....</tt>, <tt>svn://...</tt> or
  * <tt>svn+ssh://...</tt>.
  *
  * The arguments before the URL are optional and can be in any 
@@ -354,7 +353,7 @@ int url__find_by_intnum(int intnum, struct url_t **storage)
 /** -.
  *
  * This function preserves it's input.
- * If storage is non- \c NULL, it's \c ->name member get's a copy of the given
+ * If storage is non- \c NULL, it's \c ->name member gets a copy of the given
  * (or a deduced) name.
  *
  * In \a def_parms the parameters found are flagged - see \ref url_flags; 
@@ -1138,7 +1137,7 @@ int url__open_session(svn_ra_session_t **session, char **missing_dirs)
 
 		/* If we're before the hostname, signified by a "//", we abort. */
 		STOPIF_CODE_ERR( cp[-1] == '/', EINVAL,
-				"!Unsuccessfull svn_ra_stat() on every try for URL \"%s\".",
+				"!Unsuccessful svn_ra_stat() on every try for URL \"%s\".",
 				current_url->url);
 
 		/* We're at a slash, and try with a shortened URL. */
@@ -1649,7 +1648,7 @@ ex:
 
 /** -.
  *
- * DAV (<tt>http://</tt> and <tt>https://</tt>) don't like getting \c 
+ * DAV (<tt>%http://</tt> and <tt>%https://</tt>) don't like getting \c 
  * SVN_INVALID_REVNUM on some operations; they throw an 175007 <i>"HTTP 
  * Path Not Found"</i>, and <i>"REPORT request failed on '...'"</i>.
  *

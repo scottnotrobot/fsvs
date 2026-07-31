@@ -5,7 +5,6 @@
  * it under the terms of the GNU General Public License version 3 as
  * published by the Free Software Foundation.
  ************************************************************************/
-#include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <time.h>
@@ -49,7 +48,7 @@
  *   flags are cleared.
  * - An entry that is a \b modified copy destination gets reverted to the 
  *   copy source data.
- * - Manually added entries are changed back to <i>"N"</i>ew.\b
+ * - Manually added entries are changed back to <i>"N"</i>ew.
  *
  * Please note that implicitly copied entries, ie. entries that are marked 
  * as copied because some parent directory is the base of a copy, <b>can 
@@ -947,7 +946,7 @@ int rev___no_local_change(struct estat *sts)
 /** -.
  * Recurses for rev___revert_to_base.
  *
- * There's a bit of uglyness here, regarding deleted directories ...
+ * There's a bit of ugliness here, regarding deleted directories ...
  *
  * 1) If we do the tree depth-first, we have to build multiple levels of 
  * directories at once - and store which have to have their meta-data 

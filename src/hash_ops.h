@@ -10,7 +10,6 @@
 #define __HASH_OPS_H
 
 #include "global.h"
-#include <db.h>
 
 /** \file
  * Hash operations header file.

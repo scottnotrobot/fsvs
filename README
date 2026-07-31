@@ -53,6 +53,7 @@ subversion book [3].
 
 First install subversion (and, by implication, apr). 
 Next compile fsvs.
+    ./configure
     cd src
     make
 And install the binary: (the man-pages are not automatically installed yet.)
@@ -95,7 +96,7 @@ file, which you can get by using "-v -d".
 Notes/Links
 -----------
 
-1: http://subversion.tigris.org/
+1: https://subversion.apache.org/
 2: http://apr.apache.org/
 3: http://svnbook.red-bean.com/
 

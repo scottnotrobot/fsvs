@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <gdbm.h>
 #include <stddef.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <apr_md5.h>
 #include <apr_file_io.h>
@@ -33,9 +34,9 @@
  * to \c NULL, to avoid repeated free()ing. */
 #define IF_FREE(x) do { if (x) free(x); x=NULL; } while (0)
 
-/* \addtogroup compati */
-/* @{ */
-/** The system-specific character to delimit directories.
+/** \addtogroup compati
+ * @{
+ * The system-specific character to delimit directories.
  * Surely there's something like that in APR somewhere. */
 #define PATH_SEPARATOR ('/')
 /** The system-specific character to be used before environment variables.
@@ -181,7 +182,7 @@ struct ignore_t {
 #define INVALID_INTERNAL_NUMBER (-1)
 /** All the data FSVS must know about an URL. */
 struct url_t {
-	/** The URL itself (http:// or svn:// or similar) */
+	/** The URL itself (%http:// or svn:// or similar) */
 	char *url;
 	/** The user-given priority; need not be unique. 
 	 * The lower the number, the higher the priority. */
@@ -337,7 +338,7 @@ struct estat {
 			unsigned int has_orig_md5:1;
 			/** Flag whether this entry has changed or not changed (as per 
 			 * MD5/manber-compare), or if this is unknown yet.
-			 * See \ref ChgFlag. */
+			 * See \ref ChgFlag "Change detection flags". */
 			unsigned int change_flag:2;
 		};
 		/** For directories.
@@ -361,14 +362,14 @@ struct estat {
 			struct estat **by_name;
 
 			/** How many entries this directory has. */
-			AC_CV_C_UINT32_T entry_count;
+			uint32_t entry_count;
 
 			/** Used to know when this directories' children are finished.
 			 * Counts the number of unfinished subdirectories.
 			 * This is volatile and should be in the union below (with \ref 
 			 * estat::child_index), but as it's only used for directories it 
 			 * conserves memory to keep it here. */
-			AC_CV_C_UINT32_T unfinished;
+			uint32_t unfinished;
 
 			/** This flag is set if any child is *not* at the same revision,
 			 * so this directory has to be descended on reporting. */
@@ -406,11 +407,11 @@ struct estat {
 		};
 		struct {
 			/** Used in waa__input_tree() and waa__update_tree(). */
-			AC_CV_C_UINT32_T child_index;
+			uint32_t child_index;
 		};
 		struct {
 			/** Used in output_tree(). */
-			AC_CV_C_UINT32_T file_index;
+			uint32_t file_index;
 		};
 	};
 
@@ -430,8 +431,8 @@ struct estat {
 	 * The subpool is available from a hash lookup with key "" (len=0). */
   apr_hash_t *user_prop;
 
-	/** Flags for this entry. See \ref EntFlags for constant definitions. */
-	AC_CV_C_UINT32_T flags;
+	/** Flags for this entry. See \ref EntFlags "Various flags for entries" for constant definitions. */
+	uint32_t flags;
 
 
 	/** Packed representations of the file type; see \c preproc.h for 
@@ -441,7 +442,7 @@ struct estat {
 	 * value, defining which of the estat::entry_count and similar shared 
 	 * members are valid.
 	 *
-	 * See the special \ref fsvsS_constants below, too.
+	 * See the special \ref fsvsS_constants "Special FSVS file type constants", too.
 	 * @{ */
 	/** This is the value of the old revision. */
 	unsigned old_rev_mode_packed:PACKED_MODE_T_NEEDED_BITS;
@@ -453,10 +454,10 @@ struct estat {
 	/** @} */
 
 
-	/** Local status of this entry - \ref fs_bits. */
+	/** Local status of this entry - \ref fs_bits "File statii". */
 	unsigned int entry_status:10;
 
-	/** Remote status of this entry. \ref fs_bits. */
+	/** Remote status of this entry. \ref fs_bits "File statii". */
 	unsigned int remote_status:10;
 
 
@@ -505,7 +506,7 @@ struct estat {
 };
 
 
-/** \anchor fsvsS_constants Special FSVS file type constants.
+/** \anchor fsvsS_constants \name Special FSVS file type constants.
  * @{ */
 #define S_IFUNDEF (0)
 /** All sockets get filtered out when the directory gets read, so we can 
@@ -520,7 +521,7 @@ struct estat {
 #define S_ISGARBAGE S_ISFIFO
 /** @} */
 
-/** \anchor EntFlags Various flags for entries.
+/** \anchor EntFlags \name Various flags for entries.
  *
  * The RF means repos-flags, as these flags have a meaning when talking
  * to the repository.  */
@@ -607,10 +608,12 @@ struct estat {
 /** @} */
 
 
-/** \anchor ChgFlag Change detection flags. */
+/** \anchor ChgFlag \name Change detection flags. */
+/** @{ */
 #define CF_UNKNOWN (0)
 #define CF_CHANGED (1)
 #define CF_NOTCHANGED (2)
+/** @} */
 /** @} */
 
 
@@ -672,8 +675,8 @@ extern void _DEBUGP(const char file[], int line, const char func[], const char f
 	 * \endcode
 	 *
 	 * It works by checking the return value; if it is not zero, a 
-	 * <tt>goto ex</tt> is done. At this mark some cleanup is possible. */
-	/** @{ */
+	 * <tt>goto ex</tt> is done. At this mark some cleanup is possible.
+	 * @{ */
 	/** A flag to turn error printing temporarily off.
 	 * This is useful where entire calltrees would have to be equipped with 
 	 * some \c silent parameter. */
@@ -803,7 +806,8 @@ __attribute__ ((format (printf, 5, 6) ));
 /** Makes the program abort.
  * If the configure had --enable-debug and \c gdb is in the path, try
  * to use \c gdb to debug this problem (only if STDIN and STDOUT are ttys). */
-#define BUG(...) do { fflush(NULL); debuglevel=1; DEBUGP(__VA_ARGS__); *(int*)42=__LINE__; while(1) sleep(1); } while (0)
+void do__BUG(int);
+#define BUG(...) do { fflush(NULL); debuglevel=1; DEBUGP(__VA_ARGS__); do__BUG(__LINE__); while(1) sleep(1); } while (0)
 /** The same as BUG(), but conditionalized. 
  * \code
  *   BUG_ON(a == b, "HELP")
@@ -843,8 +847,8 @@ __attribute__ ((format (printf, 5, 6) ));
  * \ingroup dev
  *
  * A list of variables that can be set by commandline parameters or 
- * environment variables; these are used in nearly every action. */
-/** @{ */
+ * environment variables; these are used in nearly every action.
+ * @{ */
 /** Flag for recursive/non-recursive behaviour.
  * Starting with 0, gets incremented with \c -R and decremented with \c 
  * -N. Different actions have different default levels. */
@@ -922,9 +926,9 @@ extern const char propval_updatepipe[];
 /** \addtogroup cmds_strings Common command line strings
  * \ingroup compat
  *
+ * @{
  * These strings may have to be localized some time, that's why they're
  * defined in this place. */
-/** @{ */
 extern char parm_dump[],
 			 parm_test[],
 			 parm_load[];

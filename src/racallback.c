@@ -13,7 +13,6 @@
 
 #include <errno.h>
 #include <time.h>
-#include <unistd.h>
 
 #include <subversion-1/svn_ra.h>
 #include <subversion-1/svn_auth.h>
@@ -106,11 +105,12 @@ struct svn_ra_callbacks_t cb__cb_table=
 };
 
 
-/*----------------------------------------------------------------------------
+/** ----------------------------------------------------------------------------
  * \defgroup changerec Change-Recorder
  * An editor which simply remembers which entries are changed.
  * @{
- *--------------------------------------------------------------------------*/
+ *
+ * -------------------------------------------------------------------------- */
 
 svn_revnum_t cb___dest_rev;
 
@@ -825,7 +825,7 @@ ex:
  * to that URL.
  *
  * Will be easier with mixed-WC operation; currently it's not correct if 
- * there are overlayed non-directory entries.
+ * there are overlaid non-directory entries.
  * */
 int cb__remove_from_url(struct estat *root, struct url_t *to_remove, 
 		int *was_changed)

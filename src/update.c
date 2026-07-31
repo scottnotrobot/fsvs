@@ -65,7 +65,6 @@
 #include <subversion-1/svn_time.h>
 
 #include <sys/types.h>
-#include <unistd.h>
 #include <ctype.h>
 #include <time.h>
 #include <fcntl.h>
@@ -843,6 +842,7 @@ ex:
 }
 
 
+/** \details \anchor FHP */
 svn_error_t *up__apply_textdelta(void *file_baton,
 		const char *base_checksum,
 		apr_pool_t *pool,
@@ -919,11 +919,11 @@ into_stringbufs:
 	}
 	else
 	{
-		/** \anchor FHP File handle pools.
+		/** \details File handle pools.
 		 *
 		 * This is a bit complicated.
 		 *
-		 * With the file:/// protocol, the source and destination 
+		 * With the %file:/// protocol, the source and destination 
 		 * filehandles are not closed by the subversion libraries; 
 		 * with svn+ssh:/// they are.
 		 *
@@ -941,7 +941,7 @@ into_stringbufs:
 		 * So we go the other route: we simply define a subpool, where we 
 		 * allocate the handles in, and clear that later.
 		 * That has the additional advantage that the struct estat could 
-		 * possibly be shrinked in the future. */
+		 * possibly be shrunk in the future. */
 		/* Please note that for svn+ssh the pool given to this function cannot
 		 * be used, as this is already destroyed by the time we get to
 		 * up__close_file, and an apr_pool_clear() then results in a segfault.
@@ -979,7 +979,7 @@ into_stringbufs:
 		{
 			STOPIF( hlp__encode_filter(svn_s_tgt, sts->decoder, 1, 
 						filename, &svn_s_tgt, &encoder, sts->filehandle_pool), NULL);
-			/* If the file gets decoded, use the original MD5 for comparision. */
+			/* If the file gets decoded, use the original MD5 for comparison. */
 			encoder->output_md5= &(sts->md5);
 		}
 	}

@@ -10,7 +10,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -236,7 +235,9 @@ int ops__stat_to_action(struct estat *sts, struct sstat_t *new)
 	 * read from disk it has possibly only seconds!
 	 *
 	 * There's a long thread on dev@subversion.tigris.org about the
-	 * granularity of timestamps - auto detecting vs. setting, etc. */
+	 * granularity of timestamps - auto detecting vs. setting, etc.
+	 * UPDATE 20240720: tigris is no more, see archives like
+	 *   https://svn.haxx.se/users/archive-2008-03/0462.shtml */
 	file_status = 
 		old->mtim.tv_sec != new->mtim.tv_sec ? FS_META_MTIME : 0;
 	/* We don't show a changed ctime as "t" any more. On commit nothing 
@@ -624,7 +625,7 @@ int ops__build_path2(char *path, int max, struct estat *sts)
 	int l,i;
 
 
-	/* The path lenghts have just been fixed by ops__calc_path_len(), so we 
+	/* The path lengths have just been fixed by ops__calc_path_len(), so we 
 	 * can rely on that (minus the PATH_SEPARATOR).
 	 * If there's no parent, we're at ".". */
 	l=sts->parent ? sts->path_len - sts->parent->path_len - 1 : 1;
@@ -691,8 +692,7 @@ int ops__calc_path_len(struct estat *sts)
  * \todo A further optimization would be to check if a parent is already 
  * present, and append to that path. Similar for a neighbour entry.
  *
- * The \c cache_entry_t::id member is used as a pointer to the struct \ref  
- * estat.
+ * The \c cache_entry_t::id member is used as a pointer to the struct \ref estat.
  * */
 int ops__build_path(char **value, struct estat *sts)
 {
@@ -1325,7 +1325,7 @@ ex:
  * trees is done without doing unneeded \c lstat()s.
  *
  * Depending on \c o_chcheck a file might be checked for changes by a MD5 
- * comparision.
+ * comparison.
  *
  * Per default \c only_check_status is not set, and the data from \c 
  * lstat() is written into \a sts. Some functions need the \b old values 
@@ -1565,7 +1565,7 @@ void ops__copy_single_entry(struct estat *src, struct estat *dest)
  * \a only_A, \a both, and \a only_B are called, then \a for_every (if not 
  * \c NULL).
  *
- * This builds and loops throught the sts::by_name lists, so modifying them 
+ * This builds and loops through the sts::by_name lists, so modifying them 
  * must be done carefully, to change only the elements already processed.
  *
  * Returning an error from any function stops the loop.
